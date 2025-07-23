@@ -9,6 +9,8 @@ class PlanBase(BaseModel):
     stories: str
     price_per_sqft: float
     last_updated: datetime
+    company: str
+    community: str
 
 class PlanWithChangeFlag(PlanBase):
     price_changed_recently: bool

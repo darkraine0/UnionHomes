@@ -13,6 +13,8 @@ class Plan(Base):
     stories = Column(String)
     price_per_sqft = Column(Float)
     last_updated = Column(DateTime, default=datetime.utcnow)
+    company = Column(String, nullable=False)
+    community = Column(String, nullable=False)
     price_histories = relationship("PriceHistory", back_populates="plan")
 
 class PriceHistory(Base):
