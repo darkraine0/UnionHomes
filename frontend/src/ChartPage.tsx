@@ -22,13 +22,19 @@ const API_URL = "http://localhost:8080/api/plans";
 const COMPANY_COLORS: Record<string, string> = {
   "DR Horton": "#e11d48", // rose-600
   "UnionMain Homes": "#2563eb", // blue-600
+  "M/I Homes": "#9c27b0", // purple-600
+  "Pacesetter Homes": "#ff9800", // orange-500
+  "Trophy Signature Homes": "#2e7d32", // green-800
 };
 const COMPANY_BG_COLORS: Record<string, string> = {
   "DR Horton": "#f43f5e", // rose-500
   "UnionMain Homes": "#60a5fa", // blue-400
+  "M/I Homes": "#ba68c8", // purple-400
+  "Pacesetter Homes": "#ffb74d", // orange-300
+  "Trophy Signature Homes": "#4caf50", // green-500
 };
 
-const ChartPage: React.FC<{ selectedCompany: string }> = ({ selectedCompany }) => {
+const ChartPage: React.FC = () => {
   const [plans, setPlans] = useState<Plan[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");

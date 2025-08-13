@@ -11,6 +11,7 @@ class PlanBase(BaseModel):
     last_updated: datetime
     company: str
     community: str
+    type: str
 
 class PlanWithChangeFlag(PlanBase):
     price_changed_recently: bool

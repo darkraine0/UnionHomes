@@ -15,6 +15,7 @@ class Plan(Base):
     last_updated = Column(DateTime, default=datetime.utcnow)
     company = Column(String, nullable=False)
     community = Column(String, nullable=False)
+    type = Column(String, nullable=False, default="plan")  # "plan" or "now"
     price_histories = relationship("PriceHistory", back_populates="plan")
 
 class PriceHistory(Base):

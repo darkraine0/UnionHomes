@@ -22,6 +22,9 @@ def detect_and_update_changes(db: Session, new_plans: list):
                 db.add(price_history)
                 plan.price = plan_data['price']
                 plan.last_updated = datetime.utcnow()
+                # Update type if it changed
+                if 'type' in plan_data:
+                    plan.type = plan_data['type']
         else:
             plan = Plan(
                 plan_name=plan_data['plan_name'],
@@ -31,7 +34,8 @@ def detect_and_update_changes(db: Session, new_plans: list):
                 price_per_sqft=plan_data['price_per_sqft'],
                 last_updated=datetime.utcnow(),
                 company=plan_data['company'],
-                community=plan_data['community']
+                community=plan_data['community'],
+                type=plan_data.get('type', 'plan')  # Default to 'plan' if not specified
             )
             db.add(plan)
     db.commit()

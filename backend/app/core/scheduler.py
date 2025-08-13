@@ -1,7 +1,21 @@
 import threading
 import time
-from app.scrapers.drhorton_elevon import DRHortonElevonScraper
-from app.scrapers.unionmain_elevon import UnionMainElevonScraper
+from app.scrapers.now.elevon.drhorton import DRHortonElevonNowScraper
+from app.scrapers.now.elevon.unionmain import UnionMainElevonNowScraper
+from app.scrapers.now.elevon.historymaker import HistoryMakerElevonNowScraper
+from app.scrapers.now.elevon.mihomes import MIHomesElevonNowScraper
+from app.scrapers.now.elevon.trophysignature import TrophySignatureElevonNowScraper
+from app.scrapers.now.elevon.pacesetter import PacesetterElevonNowScraper
+from app.scrapers.now.elevon.khovnanian import KHovnanianElevonNowScraper
+from app.scrapers.plans.elevon.drhorton import DRHortonElevonPlanScraper
+from app.scrapers.plans.elevon.unionmain import UnionMainElevonPlanScraper
+from app.scrapers.plans.elevon.historymaker import HistoryMakerElevonPlanScraper
+from app.scrapers.plans.elevon.khovnanian import KHovnanianElevonPlanScraper
+from app.scrapers.plans.elevon.mihomes import MIHomesElevonPlanScraper
+from app.scrapers.plans.elevon.pacesetter import PacesetterElevonPlanScraper
+from app.scrapers.plans.elevon.trophysignature import TrophySignatureElevonPlanScraper
+from app.scrapers.now.cambridge.unionmain import UnionMainCambridgeNowScraper
+from app.scrapers.plans.cambridge.unionmain import UnionMainCambridgePlanScraper
 from app.db.session import SessionLocal
 from app.services.change_detection import detect_and_update_changes
 
@@ -11,8 +25,22 @@ class ScraperScheduler:
     def __init__(self):
         # Add all scraper instances here as you implement more
         self.scrapers = [
-            DRHortonElevonScraper(),
-            UnionMainElevonScraper(),
+            DRHortonElevonNowScraper(),
+            UnionMainElevonNowScraper(),
+            HistoryMakerElevonNowScraper(),
+            MIHomesElevonNowScraper(),
+            TrophySignatureElevonNowScraper(),
+            PacesetterElevonNowScraper(),
+            KHovnanianElevonNowScraper(),
+            DRHortonElevonPlanScraper(),
+            UnionMainElevonPlanScraper(),
+            HistoryMakerElevonPlanScraper(),
+            KHovnanianElevonPlanScraper(),
+            MIHomesElevonPlanScraper(),
+            PacesetterElevonPlanScraper(),
+            TrophySignatureElevonPlanScraper(),
+            UnionMainCambridgeNowScraper(),
+            UnionMainCambridgePlanScraper(),
         ]
         self.timer = None
         self.running = False

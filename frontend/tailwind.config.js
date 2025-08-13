@@ -10,6 +10,12 @@ module.exports = {
     'bg-gradient-to-r', 'from-blue-500', 'to-cyan-500',
     'hover:bg-blue-600', 'hover:bg-blue-700', 'hover:bg-cyan-200',
     'bg-cyan-50', 'bg-cyan-100', 'text-cyan-700', 'border-cyan-300',
+    'bg-red-500', 'border-red-600',
+    'bg-green-500', 'border-green-600',
+    'bg-orange-500', 'border-orange-600',
+    'bg-purple-500', 'border-purple-600',
+    'bg-amber-500', 'border-amber-600',
+    'bg-emerald-500', 'border-emerald-600',
   ],
   theme: {
     extend: {
