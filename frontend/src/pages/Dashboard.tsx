@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import CompanyTabs from "../components/CompanyTabs";
+import TypeTabs from "../components/TypeTabs";
 import Loader from "../components/Loader";
 import ErrorMessage from "../components/ErrorMessage";
+import API_URL from '../config';
+import { getCompanyColor } from '../utils/colors';
 
 interface Plan {
   plan_name: string;
@@ -13,9 +16,9 @@ interface Plan {
   price_changed_recently: boolean;
   company: string;
   community: string;
+  type: string;
+  address?: string;
 }
-
-const API_URL = "http://localhost:8080/api/plans";
 
 type SortKey = "plan_name" | "price" | "sqft" | "last_updated";
 type SortOrder = "asc" | "desc";
@@ -25,17 +28,17 @@ const Dashboard: React.FC = () => {
   const [plans, setPlans] = useState<Plan[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [filter, setFilter] = useState("");
   const [sortKey, setSortKey] = useState<SortKey>("price");
   const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
   const [page, setPage] = useState(1);
   const [selectedCompany, setSelectedCompany] = useState<string>('All');
+  const [selectedType, setSelectedType] = useState<string>('Now');
 
   const fetchPlans = async () => {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch(API_URL);
+      const res = await fetch(API_URL + "/plans");
       if (!res.ok) throw new Error("Failed to fetch plans");
       const data = await res.json();
       setPlans(data);
@@ -54,13 +57,13 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     setPage(1); // Reset to first page on filter/sort change
-  }, [filter, sortKey, sortOrder, selectedCompany]);
+  }, [sortKey, sortOrder, selectedCompany, selectedType]);
 
   const companies = Array.from(new Set(plans.map((p) => p.company)));
 
   const filteredPlans = plans.filter((plan) =>
     (selectedCompany === 'All' || plan.company === selectedCompany) &&
-    plan.plan_name.toLowerCase().includes(filter.toLowerCase())
+    (selectedType === 'Plan' || selectedType === 'Now' ? plan.type === selectedType.toLowerCase() : true)
   );
 
   const sortedPlans = [...filteredPlans].sort((a, b) => {
@@ -99,10 +102,11 @@ const Dashboard: React.FC = () => {
       "Last Updated",
       "Company",
       "Community",
+      "Type",
       "Price Changed Recently"
     ];
     const rows = sortedPlans.map((plan) => [
-      plan.plan_name,
+      plan.type === 'now' && plan.address ? plan.address : plan.plan_name,
       plan.price,
       plan.sqft,
       plan.stories,
@@ -110,6 +114,7 @@ const Dashboard: React.FC = () => {
       plan.last_updated,
       plan.company,
       plan.community,
+      plan.type,
       plan.price_changed_recently ? "Yes" : "No"
     ]);
     const csvContent = [header, ...rows]
@@ -131,7 +136,10 @@ const Dashboard: React.FC = () => {
       {/* Main Card/Table */}
       <div className="w-full bg-white rounded-xl shadow p-4 md:p-8">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
-          <CompanyTabs companies={companies} selected={selectedCompany} onSelect={setSelectedCompany} />
+          <div className="flex flex-col gap-4 w-full justify-center items-center">
+            <TypeTabs selected={selectedType} onSelect={setSelectedType} />
+            <CompanyTabs companies={companies} selected={selectedCompany} onSelect={setSelectedCompany} />
+          </div>
           <button className="px-5 py-2 rounded-lg bg-blue-600 text-white font-semibold shadow-sm hover:bg-blue-700 transition" onClick={exportCSV}>
             Export CSV
           </button>
@@ -172,6 +180,7 @@ const Dashboard: React.FC = () => {
                   <th className="px-4 py-3 border-b text-left text-sm font-bold text-gray-700 cursor-pointer bg-gray-100" onClick={() => handleSort("sqft")}>Sq Ft</th>
                   <th className="px-4 py-3 border-b text-left text-sm font-bold text-gray-700 bg-gray-100">Stories</th>
                   <th className="px-4 py-3 border-b text-left text-sm font-bold text-gray-700 bg-gray-100">$/Sq Ft</th>
+                  <th className="px-4 py-3 border-b text-left text-sm font-bold text-gray-700 bg-gray-100">Type</th>
                   <th className="px-4 py-3 border-b text-left text-sm font-bold text-gray-700 bg-gray-100">Company</th>
                   <th className="px-4 py-3 border-b text-left text-sm font-bold text-gray-700 bg-gray-100">Community</th>
                   <th className="px-4 py-3 border-b text-left text-sm font-bold text-gray-700 cursor-pointer bg-gray-100" onClick={() => handleSort("last_updated")}>Last Updated</th>
@@ -183,14 +192,25 @@ const Dashboard: React.FC = () => {
                     key={plan.plan_name + plan.last_updated + plan.company}
                     className={`transition-colors duration-150 ${plan.price_changed_recently ? "bg-blue-50" : "hover:bg-gray-50"}`}
                   >
-                    <td className="px-4 py-3 border-b font-semibold text-base text-gray-800">{plan.plan_name}</td>
+                    <td className="px-4 py-3 border-b font-semibold text-base text-gray-800">
+                      {plan.type === 'now' && plan.address ? plan.address : plan.plan_name}
+                    </td>
                     <td className="px-4 py-3 border-b font-bold text-lg text-blue-700">${plan.price.toLocaleString()}</td>
                     <td className="px-4 py-3 border-b text-gray-700">{plan.sqft?.toLocaleString?.() ?? ""}</td>
                     <td className="px-4 py-3 border-b text-gray-700">{plan.stories}</td>
                     <td className="px-4 py-3 border-b text-gray-700">{plan.price_per_sqft ? `$${plan.price_per_sqft.toFixed(2)}` : ""}</td>
+                    <td className="px-4 py-3 border-b text-gray-700">
+                      <span className={`inline-block px-2 py-1 rounded-full text-xs font-semibold ${
+                        plan.type === 'plan' ? 'bg-purple-100 text-purple-800' : 'bg-green-100 text-green-800'
+                      }`}>
+                        {plan.type === 'plan' ? 'Plan' : 'Now'}
+                      </span>
+                    </td>
                     <td className="px-4 py-3 border-b flex items-center gap-2 text-gray-700">
-                      {plan.company === 'DR Horton' && <span className="inline-block w-3 h-3 rounded-full bg-blue-400"></span>}
-                      {plan.company === 'UnionMain Homes' && <span className="inline-block w-3 h-3 rounded-full bg-cyan-400"></span>}
+                                          {(() => {
+                      const color = getCompanyColor(plan.company);
+                      return <span className="inline-block w-4 h-4 rounded-full border" style={{ backgroundColor: color, borderColor: color }}></span>;
+                    })()}
                       {plan.company}
                     </td>
                     <td className="px-4 py-3 border-b text-gray-700">{plan.community}</td>
@@ -199,7 +219,7 @@ const Dashboard: React.FC = () => {
                 ))}
                 {paginatedPlans.length === 0 && (
                   <tr>
-                    <td colSpan={8} className="text-center py-6 text-lg text-gray-500">
+                    <td colSpan={9} className="text-center py-6 text-lg text-gray-500">
                       No plans found.
                     </td>
                   </tr>

@@ -15,6 +15,11 @@ class Plan(Base):
     last_updated = Column(DateTime, default=datetime.utcnow)
     company = Column(String, nullable=False)
     community = Column(String, nullable=False)
+    type = Column(String, nullable=False, default="plan")  # "plan" or "now"
+    beds = Column(String)  # Number of bedrooms
+    baths = Column(String)  # Number of bathrooms
+    address = Column(String)  # Full address for "now" items
+    design_number = Column(String)  # Design number/model
     price_histories = relationship("PriceHistory", back_populates="plan")
 
 class PriceHistory(Base):
