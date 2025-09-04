@@ -2,6 +2,19 @@
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
+## API Configuration
+
+The application automatically configures the API URL based on the environment:
+
+- **Development**: Uses `http://localhost:8080/api` for local development
+- **Production**: Uses `/api` (relative path) when built and deployed
+
+This is handled by environment files:
+- `.env.development`: Sets `VITE_API_URL=http://localhost:8080/api`
+- `.env.production`: Sets `VITE_API_URL=/api`
+
+The configuration is managed in `src/config.ts` and automatically used by all API calls throughout the application.
+
 Currently, two official plugins are available:
 
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh

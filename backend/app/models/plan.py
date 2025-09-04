@@ -12,6 +12,7 @@ class PlanBase(BaseModel):
     company: str
     community: str
     type: str
+    address: Optional[str] = None
 
 class PlanWithChangeFlag(PlanBase):
     price_changed_recently: bool

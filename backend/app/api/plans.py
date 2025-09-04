@@ -35,6 +35,7 @@ def get_plans(db: Session = Depends(get_db)):
             company=plan.company,
             community=plan.community,
             type=plan.type,
+            address=plan.address,
             price_changed_recently=plan.id in changed_plan_ids
         ))
     return result 

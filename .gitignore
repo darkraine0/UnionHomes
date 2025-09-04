@@ -1,20 +1,32 @@
 node_modules
+
 # Python
 __pycache__/
 *.py[cod]
 *.pyo
 *.pyd
 *.pyc
-*.pyo
-*.pyd
 *.env
-.env
-.venv
+.venv/
 venv/
 ENV/
 env/
+*.egg-info/
+*.egg
+pip-log.txt
+pip-delete-this-directory.txt
+
+# SQLite/Database
+*.sqlite
 *.sqlite3
 *.db
+*.db3
+*.sdb
+*.db-journal
+*.sqlite-journal
+*.sql
+*.bak
+*.backup
 *.log
 
 # VSCode
@@ -44,4 +56,3 @@ coverage/
 *.py,cover
 .hypothesis/
 .pytest_cache/
-# End Generation Here

@@ -5,6 +5,7 @@ import TypeTabs from "../components/TypeTabs";
 import Loader from "../components/Loader";
 import ErrorMessage from "../components/ErrorMessage";
 import API_URL from '../config';
+import { getCompanyColor } from '../utils/colors';
 
 interface Plan {
   plan_name: string;
@@ -17,6 +18,7 @@ interface Plan {
   company: string;
   community: string;
   type: string;
+  address?: string;
 }
 
 type SortKey = "plan_name" | "price" | "sqft" | "last_updated";
@@ -45,8 +47,10 @@ const CommunityDetail: React.FC = () => {
       if (!res.ok) throw new Error("Failed to fetch plans");
       const data: Plan[] = await res.json();
       
-      // Filter plans for this specific community
-      const communityPlans = data.filter(plan => plan.community === decodedCommunityName);
+      // Filter plans for this specific community (case-insensitive)
+      const communityPlans = data.filter(plan => 
+        plan.community.toLowerCase() === decodedCommunityName.toLowerCase()
+      );
       setPlans(communityPlans);
     } catch (err: any) {
       setError(err.message || "Unknown error");
@@ -114,7 +118,7 @@ const CommunityDetail: React.FC = () => {
       "Price Changed Recently"
     ];
     const rows = sortedPlans.map((plan) => [
-      plan.plan_name,
+      plan.type === 'now' && plan.address ? plan.address : plan.plan_name,
       plan.price,
       plan.sqft,
       plan.stories,
@@ -239,7 +243,9 @@ const CommunityDetail: React.FC = () => {
                     key={plan.plan_name + plan.last_updated + plan.company}
                     className={`transition-colors duration-150 ${plan.price_changed_recently ? "bg-blue-50" : "hover:bg-gray-50"}`}
                   >
-                    <td className="px-4 py-3 border-b font-semibold text-base text-gray-800">{plan.plan_name}</td>
+                    <td className="px-4 py-3 border-b font-semibold text-base text-gray-800">
+                      {plan.type === 'now' && plan.address ? plan.address : plan.plan_name}
+                    </td>
                     <td className="px-4 py-3 border-b font-bold text-lg text-blue-700">${plan.price.toLocaleString()}</td>
                     <td className="px-4 py-3 border-b text-gray-700">{plan.sqft?.toLocaleString?.() ?? ""}</td>
                     <td className="px-4 py-3 border-b text-gray-700">{plan.stories}</td>
@@ -252,13 +258,10 @@ const CommunityDetail: React.FC = () => {
                       </span>
                     </td>
                     <td className="px-4 py-3 border-b flex items-center gap-2 text-gray-700">
-                      {plan.company === 'DR Horton' && <span className="inline-block w-4 h-4 rounded-full bg-blue-500 border border-blue-600"></span>}
-                      {plan.company === 'UnionMain Homes' && <span className="inline-block w-4 h-4 rounded-full bg-cyan-500 border border-cyan-600"></span>}
-                      {plan.company === 'HistoryMaker Homes' && <span className="inline-block w-4 h-4 rounded-full bg-green-500 border border-green-600"></span>}
-                      {plan.company === 'K. Hovnanian Homes' && <span className="inline-block w-4 h-4 rounded-full bg-orange-500 border border-orange-600"></span>}
-                      {plan.company === 'M/I Homes' && <span className="inline-block w-4 h-4 rounded-full bg-purple-500 border border-purple-600"></span>}
-                      {plan.company === 'Pacesetter Homes' && <span className="inline-block w-4 h-4 rounded-full bg-amber-500 border border-amber-600"></span>}
-                      {plan.company === 'Trophy Signature Homes' && <span className="inline-block w-4 h-4 rounded-full bg-emerald-500 border border-emerald-600"></span>}
+                                          {(() => {
+                      const color = getCompanyColor(plan.company);
+                      return <span className="inline-block w-4 h-4 rounded-full border" style={{ backgroundColor: color, borderColor: color }}></span>;
+                    })()}
                       {plan.company}
                     </td>
                     <td className="px-4 py-3 border-b text-xs text-gray-500">{new Date(plan.last_updated).toLocaleString()}</td>

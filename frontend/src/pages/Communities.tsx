@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
 import ErrorMessage from "../components/ErrorMessage";
 import API_URL from '../config';
+import { getCompanyColor } from '../utils/colors';
 
 interface Plan {
   plan_name: string;
@@ -94,26 +95,33 @@ const Communities: React.FC = () => {
   if (error) return <ErrorMessage message={error} />;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-gray-50">
+      <div className="container mx-auto p-4 md:p-8 lg:p-12">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Communities</h1>
           <p className="text-gray-600">Explore home plans by community</p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-12">
           {communities.map((community) => (
             <div
               key={community.name}
               onClick={() => handleCommunityClick(community.name)}
               className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:scale-105"
             >
-              <div className="relative h-48 rounded-t-xl overflow-hidden">
-                <img
-                  src="https://elevontx.com/wp-content/uploads/2024/01/UnionMain50Model.jpeg.webp"
-                  alt={community.name}
-                  className="w-full h-full object-cover"
-                />
+                             <div className="relative h-48 rounded-t-xl overflow-hidden">
+                 <img
+                                       src={
+                      community.name === 'Cambridge' ? 'https://lh3.googleusercontent.com/p/AF1QipNy23uJq2nst_j1A4fK5_S63FLs03bYz8cReUv8=s680-w680-h510-rw' :
+                      community.name === 'Milrany' ? 'https://unionmainhomes.com/wp-content/uploads/2024/08/42_3504_Thomas_Earl_Way_Melissa_TX_75454__Exports12-1.jpg' :
+                      community.name === 'Brookville' ? 'https://nhs-dynamic-secure.akamaized.net/images/homes/union56526/94853826-250522.jpg?encoder=freeimage&progressive=true&maxwidth=1932&format=jpg' :
+                      community.name === 'Edgewater' ? 'https://unionmainhomes.com/wp-content/uploads/2022/05/02-Sign-2.jpg' :
+                      community.name === 'Creekside' ? 'https://ssl.cdn-redfin.com/photo/community/30443754/mbphoto/genMid.0_4.jpg' :
+                      'https://elevontx.com/wp-content/uploads/2024/01/UnionMain50Model.jpeg.webp'
+                    }
+                   alt={community.name}
+                   className="w-full h-full object-cover"
+                 />
                 {community.recentChanges > 0 && (
                   <div className="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
                     {community.recentChanges} new
@@ -164,22 +172,17 @@ const Communities: React.FC = () => {
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-gray-600">Builders:</span>
                       <div className="flex gap-1">
-                        {community.companies.slice(0, 3).map((company) => (
-                          <span
-                            key={company}
-                            className={`inline-block w-3 h-3 rounded-full border ${
-                              company === 'DR Horton' ? 'bg-blue-500 border-blue-600' :
-                              company === 'UnionMain Homes' ? 'bg-cyan-500 border-cyan-600' :
-                              company === 'HistoryMaker Homes' ? 'bg-green-500 border-green-600' :
-                              company === 'K. Hovnanian Homes' ? 'bg-orange-500 border-orange-600' :
-                              company === 'M/I Homes' ? 'bg-purple-500 border-purple-600' :
-                              company === 'Pacesetter Homes' ? 'bg-amber-500 border-amber-600' :
-                              company === 'Trophy Signature Homes' ? 'bg-emerald-500 border-emerald-600' :
-                              'bg-gray-500 border-gray-600'
-                            }`}
-                            title={company}
-                          />
-                        ))}
+                        {community.companies.slice(0, 3).map((company) => {
+                          const color = getCompanyColor(company);
+                          return (
+                            <span
+                              key={company}
+                              className="inline-block w-3 h-3 rounded-full border"
+                              style={{ backgroundColor: color, borderColor: color }}
+                              title={company}
+                            />
+                          );
+                        })}
                         {community.companies.length > 3 && (
                           <span className="text-xs text-gray-500">+{community.companies.length - 3}</span>
                         )}

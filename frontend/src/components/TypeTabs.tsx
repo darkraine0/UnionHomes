@@ -19,7 +19,7 @@ const TypeTabs: React.FC<TypeTabsProps> = ({ selected, onSelect }) => (
           }`}
           onClick={() => onSelect(type)}
         >
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-x-4 gap-y-2">
             <div className={`w-2 h-2 rounded-full ${
               type === "Now" 
                 ? active ? "bg-green-500" : "bg-green-400" 

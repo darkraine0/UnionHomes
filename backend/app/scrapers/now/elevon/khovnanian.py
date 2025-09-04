@@ -23,6 +23,7 @@ class KHovnanianElevonNowScraper(BaseScraper):
         return str(match.group(1)) if match else "1"
 
     def fetch_plans(self) -> List[Dict]:
+
         try:
             print(f"[KHovnanianElevonNowScraper] Fetching URL: {self.URL}")
             

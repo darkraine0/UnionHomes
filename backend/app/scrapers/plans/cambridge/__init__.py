@@ -1,2 +1,5 @@
 # Cambridge plans scrapers package
-from .unionmain import UnionMainCambridgePlanScraper 
+from .unionmain import UnionMainCambridgePlanScraper
+from .coventry import CoventryCambridgePlanScraper
+from .amlegendhomes import AmericanLegendHomesCambridgePlanScraper
+from .brightlandhomes import BrightlandHomesCambridgePlanScraper 

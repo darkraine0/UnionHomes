@@ -6,6 +6,8 @@ import TypeTabs from "../components/TypeTabs";
 import Loader from "../components/Loader";
 import ErrorMessage from "../components/ErrorMessage";
 import API_URL from '../config';
+import { getCompanyColor } from '../utils/colors';
+
 
 Chart.register(LineElement, PointElement, LinearScale, Title, CategoryScale, Tooltip, Legend);
 
@@ -22,24 +24,7 @@ interface Plan {
   type: string;
 }
 
-const COMPANY_COLORS: Record<string, string> = {
-  "DR Horton": "#7288ff",
-  "UnionMain Homes": "#f40000",
-  "HistoryMaker Homes": "#00a651",
-  "K. Hovnanian Homes": "#ff6b35",
-  "M/I Homes": "#9c27b0",
-  "Pacesetter Homes": "#ff9800",
-  "Trophy Signature Homes": "#2e7d32",
-};
-const COMPANY_BG_COLORS: Record<string, string> = {
-  "DR Horton": "#7288ff",
-  "UnionMain Homes": "#f40000",
-  "HistoryMaker Homes": "#00a651",
-  "K. Hovnanian Homes": "#ff6b35",
-  "M/I Homes": "#9c27b0",
-  "Pacesetter Homes": "#ff9800",
-  "Trophy Signature Homes": "#2e7d32",
-};
+
 
 const ChartPage: React.FC = () => {
   const { communityName } = useParams<{ communityName: string }>();
@@ -99,8 +84,8 @@ const ChartPage: React.FC = () => {
     return {
       label: company,
       data: sorted.map((p) => ({ x: p.sqft, y: p.price })),
-      borderColor: COMPANY_COLORS[company] || '#7288ff',
-      backgroundColor: COMPANY_BG_COLORS[company] || '#00cfff',
+      borderColor: getCompanyColor(company),
+      backgroundColor: getCompanyColor(company) + '40', // Add 40 for transparency
       tension: 0.2,
       pointRadius: 4,
       pointHoverRadius: 6,
@@ -121,12 +106,12 @@ const ChartPage: React.FC = () => {
     plugins: {
       legend: {
         display: true,
-        labels: { font: { weight: "bold" }, color: '#7288ff' },
+        labels: { font: { weight: "bold" }, color: '#2563eb' },
       },
       title: {
         display: true,
         text: `${decodedCommunityName} - Price vs Sqft by Company - ${selectedType} Homes`,
-        color: "#7288ff",
+        color: "#2563eb",
         font: { size: 18, weight: "bold" },
       },
       tooltip: {
@@ -140,15 +125,15 @@ const ChartPage: React.FC = () => {
     },
     scales: {
       x: {
-        title: { display: true, text: "Sqft", color: "#7288ff", font: { weight: "bold" } },
-        ticks: { color: "#7288ff" },
-        grid: { color: "#e0e7ff" },
+        title: { display: true, text: "Sqft", color: "#2563eb", font: { weight: "bold" } },
+        ticks: { color: "#2563eb" },
+        grid: { color: "#dbeafe" },
         type: 'linear',
       },
       y: {
-        title: { display: true, text: "Price ($)", color: "#7288ff", font: { weight: "bold" } },
-        ticks: { color: "#7288ff" },
-        grid: { color: "#e0e7ff" },
+        title: { display: true, text: "Price ($)", color: "#2563eb", font: { weight: "bold" } },
+        ticks: { color: "#2563eb" },
+        grid: { color: "#dbeafe" },
       },
     },
   } as any;
@@ -157,7 +142,7 @@ const ChartPage: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-blue-100 p-4 flex flex-col items-center">
       <div className="w-full max-w-6xl bg-white rounded-lg shadow p-6 mt-8">
         <div className="flex justify-between items-center mb-8">
-          <h2 style={{ color: '#7288ff' }} className="text-3xl font-bold">{decodedCommunityName} - Price Analysis</h2>
+          <h2 style={{ color: '#2563eb' }} className="text-3xl font-bold">{decodedCommunityName} - Price Analysis</h2>
           <div className="flex gap-4">
             <button 
               onClick={() => navigate(`/community/${encodeURIComponent(decodedCommunityName)}`)}
